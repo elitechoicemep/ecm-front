@@ -163,8 +163,8 @@ export default function Navbar() {
                 ELITE CHOICE
               </span>
               <span className="block text-[11px] md:text-[12px] font-bold tracking-[1px] text-[#C8922A] uppercase">
-                  <span className="hidden">ECM</span>
-                  <span className="inline">
+                  <span className="inline sm:hidden">ECM</span>
+                  <span className="hidden sm:inline">
                       Electromechanical Contracting Company
                   </span>
               </span>
@@ -204,8 +204,18 @@ export default function Navbar() {
                         </li>
                     </ul>
 
-                    <div className="lg:hidden flex items-center gap-3">
-                        {user && <AccountMenu/>}
+                    <div className="lg:hidden flex items-center gap-2">
+                        {user ? <AccountMenu/> : (<Link
+                            to="/dashboard"
+                            className={`inline-flex items-center gap-1.5 text-[10px] font-bold tracking-[0.7px] uppercase px-3 py-[7px] border border-[#C8922A]/50 rounded-[7px] text-[#C8922A] hover:bg-[#C8922A]/12 hover:border-[#C8922A] transition-all duration-200 ${isActive('/dashboard') ? 'bg-[#C8922A]/12 border-[#C8922A]' : ''}`}
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="w-[12px] h-[12px]" fill="none"
+                                 viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2}
+                                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                            </svg>
+                            Login
+                        </Link>)}
                     </div>
                 </div>
 
@@ -226,17 +236,6 @@ export default function Navbar() {
                                 Get a Quote
                             </Link>
                         </li>
-                        {!user && (<li className="py-4">
-                                <Link to="/dashboard"
-                                      className="inline-flex items-center gap-2 text-[13px] font-bold text-[#C8922A]">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none"
-                                         viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2}
-                                              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                                    </svg>
-                                    Dashboard
-                                </Link>
-                            </li>)}
                     </ul>
                 </div>
             </nav>
