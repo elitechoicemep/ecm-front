@@ -117,12 +117,11 @@ export default function Portal() {
 
   const doLogin = async () => {
     const { username, password } = loginForm.values;
-    if (!username.trim() || !password) { setLoginErr('Please enter username and password.'); return; }
+    if (!username.trim() || !password) { setLoginErr('Please enter username/email and password.'); return; }
     setLoginLoading(true); setLoginErr('');
     try {
-      await api.login({ username: username.trim(), password });
-      const me = await api.me();
-      const sessionUser = normaliseSession(me);
+      const loginData = await api.login({ username: username.trim(), password });
+      const sessionUser = normaliseSession(loginData);
       setUser(sessionUser);
       window.dispatchEvent(new CustomEvent('auth:changed', { detail: { user: sessionUser } }));
     } catch (err) {

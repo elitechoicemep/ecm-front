@@ -25,7 +25,8 @@ client.interceptors.response.use(
       err.response?.status !== 401 ||
       original._retried ||
       original.url === '/auth/refresh' ||
-      original.url === '/auth/login'
+      original.url === '/auth/login' ||
+      original.url === '/auth/me'
     ) {
       return Promise.reject(err);
     }

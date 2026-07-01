@@ -50,11 +50,11 @@ export function LoginScreen({ loginErr, loginLoading, loginForm, doLogin, toast 
           {/* ── Login screen ── */}
           {screen === 'login' && (
             <>
-              <Field label="Username">
+              <Field label="Username or Email">
                 <input
                   value={loginForm.values.username}
                   onChange={loginForm.set('username')}
-                  placeholder="Enter your username"
+                  placeholder="Enter username or email"
                   autoComplete="username"
                   className={inp}
                   onKeyDown={e => e.key === 'Enter' && doLogin()}

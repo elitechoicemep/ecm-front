@@ -138,7 +138,7 @@ export default function Navbar() {
 
                     <div className="flex items-center h-full shrink-0">
                         <button
-                            className="lg:hidden flex flex-col gap-[5px] p-2 mr-1"
+                            className="lg:hidden flex flex-col gap-[5px] p-1 "
                             onClick={() => setOpen(!open)}
                             aria-label="Toggle menu"
                         >
@@ -151,7 +151,7 @@ export default function Navbar() {
                         </button>
                         <Link
                             to="/"
-                            className="flex items-center gap-3 shrink-0 h-full ml-1 md:ml-4"
+                            className="flex items-center gap-1 md:gap-2 shrink-0 h-full ml-1 md:ml-4"
                         >
                         <img
                             src="/assets/images/emec_logo.jpeg"
@@ -163,8 +163,8 @@ export default function Navbar() {
                 ELITE CHOICE
               </span>
               <span className="block text-[11px] md:text-[12px] font-bold tracking-[1px] text-[#C8922A] uppercase">
-                  <span className="md:hidden">ECM</span>
-                  <span className="hidden md:inline">
+                  <span className="hidden">ECM</span>
+                  <span className="inline">
                       Electromechanical Contracting Company
                   </span>
               </span>
