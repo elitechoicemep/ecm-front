@@ -3,7 +3,10 @@ const url = require('url');
 const { run } = require('react-snap');
 const pkg = require('../package.json');
 
-if (process.env.VERCEL) {
+// `vercel build` sets VERCEL=1 whether it runs on Vercel's own cloud build image
+// (missing Chromium system libs) or inside GitHub Actions (a normal Ubuntu runner
+// with the libs Puppeteer needs). Only skip on the former.
+if (process.env.VERCEL && !process.env.GITHUB_ACTIONS) {
   console.log('Skipping react-snap prerender on Vercel because Chromium system libraries are unavailable in the build image.');
   process.exit(0);
 }
