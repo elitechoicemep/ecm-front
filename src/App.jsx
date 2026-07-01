@@ -12,6 +12,7 @@ import Careers  from './pages/Careers';
 import Contact  from './pages/Contact';
 import Portal        from './pages/Portal';
 import ResetPassword from './pages/ResetPassword';
+import { SEO } from './seo';
 
 // Scroll to top on every route change
 function ScrollToTop() {
@@ -20,10 +21,11 @@ function ScrollToTop() {
   return null;
 }
 
-// Dashboard has its own full-screen layout — no shared footer
-function Layout({ children, isPortal }) {
+// Dashboard has its own full-screen layout â€” no shared footer
+function Layout({ children, isPortal, seoKey }) {
   return (
     <>
+      <SEO pageKey={seoKey} />
       <Navbar />
       <main>{children}</main>
       {!isPortal && <Footer />}
@@ -36,20 +38,20 @@ export default function App() {
     <BrowserRouter>
       <ScrollToTop />
       <Routes>
-        <Route path="/"         element={<Layout><Home     /></Layout>} />
-        <Route path="/about"    element={<Layout><About    /></Layout>} />
-        <Route path="/services" element={<Layout><Services /></Layout>} />
-        <Route path="/projects" element={<Layout><Projects /></Layout>} />
-        <Route path="/clients"  element={<Layout><Clients  /></Layout>} />
-        <Route path="/licenses" element={<Layout><Licenses /></Layout>} />
-        <Route path="/careers"  element={<Layout><Careers  /></Layout>} />
-        <Route path="/contact"  element={<Layout><Contact  /></Layout>} />
-        <Route path="/dashboard" element={<Layout isPortal><Portal /></Layout>} />
+        <Route path="/"         element={<Layout seoKey="home"><Home     /></Layout>} />
+        <Route path="/about"    element={<Layout seoKey="about"><About    /></Layout>} />
+        <Route path="/services" element={<Layout seoKey="services"><Services /></Layout>} />
+        <Route path="/projects" element={<Layout seoKey="projects"><Projects /></Layout>} />
+        <Route path="/clients"  element={<Layout seoKey="clients"><Clients  /></Layout>} />
+        <Route path="/licenses" element={<Layout seoKey="licenses"><Licenses /></Layout>} />
+        <Route path="/careers"  element={<Layout seoKey="careers"><Careers  /></Layout>} />
+        <Route path="/contact"  element={<Layout seoKey="contact"><Contact  /></Layout>} />
+        <Route path="/dashboard" element={<Layout isPortal seoKey="private"><Portal /></Layout>} />
         <Route path="/portal"    element={<Navigate to="/dashboard" replace />} />
-        <Route path="/reset-password" element={<Layout isPortal><ResetPassword /></Layout>} />
+        <Route path="/reset-password" element={<Layout isPortal seoKey="resetPassword"><ResetPassword /></Layout>} />
         {/* 404 */}
         <Route path="*" element={
-          <Layout>
+          <Layout seoKey="notFound">
             <div className="min-h-screen pt-[68px] flex items-center justify-center bg-[#0B1D33]">
               <div className="text-center px-6">
                 <div className="font-condensed text-[120px] font-extrabold text-[#C8922A]/20 leading-none mb-4">404</div>
@@ -66,4 +68,7 @@ export default function App() {
     </BrowserRouter>
   );
 }
+
+
+
 
