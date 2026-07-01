@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Barlow', sans-serif; background: #0B1D33; color: #e8edf5; overflow-x: hidden; }
+  a { text-decoration: none; }
+}
+
+@layer utilities {
+  .font-barlow    { font-family: 'Barlow', sans-serif; }
+  .font-condensed { font-family: 'Barlow Condensed', sans-serif; }
+  .font-mono-jet  { font-family: 'JetBrains Mono', monospace; }
+
+  /* gold underline hover */
+  .nav-link-hover {
+    position: relative;
+    transition: color 0.2s;
+  }
+  .nav-link-hover::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0;
+    width: 0; height: 2px;
+    background: #C8922A;
+    transition: width 0.25s ease;
+  }
+  .nav-link-hover:hover::after,
+  .nav-link-hover.active::after { width: 100%; }
+
+  /* scroll reveal */
+  .rv { opacity: 0; transform: translateY(22px); transition: opacity .55s ease, transform .55s ease; }
+  .rv.in { opacity: 1; transform: none; }
+
+  /* gold grid overlay */
+  .gold-grid {
+    background-image:
+      linear-gradient(rgba(200,146,42,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(200,146,42,0.04) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+}
