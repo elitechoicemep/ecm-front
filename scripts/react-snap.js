@@ -1,8 +1,12 @@
 const fs = require('fs');
-const path = require('path');
 const url = require('url');
 const { run } = require('react-snap');
 const pkg = require('../package.json');
+
+if (process.env.VERCEL) {
+  console.log('Skipping react-snap prerender on Vercel because Chromium system libraries are unavailable in the build image.');
+  process.exit(0);
+}
 
 const publicUrl = process.env.PUBLIC_URL || pkg.homepage;
 const reactScriptsVersion = parseInt(
