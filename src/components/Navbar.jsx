@@ -218,7 +218,7 @@ export default function Navbar() {
                         </Link>)}
                     </div>
                 </div>
-
+ 
                 <div
                     className={`lg:hidden absolute top-[68px] left-0 right-0 bg-[#102037] border-b border-[#C8922A]/20 overflow-hidden transition-all duration-300 ${open ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}
                 >
