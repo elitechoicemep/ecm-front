@@ -79,6 +79,7 @@ export const api = {
   me:                  ()     => get('/auth/me'),
   forgotPassword:      body   => post('/auth/forgot-password', body),
   resetPassword:       body   => post('/auth/reset-password',  body),
+  resendVerification:  body   => post('/auth/resend-verification', body),
   submitContactMessage: body   => post('/contact', body),
 
   // ── Employee ──────────────────────────────────────────────────

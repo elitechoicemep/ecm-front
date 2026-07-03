@@ -127,6 +127,12 @@ export const seoPages = {
     description: 'Reset your Elite Choice portal password.',
     noIndex: true,
   },
+  verifyEmail: {
+    path: '/verify-email',
+    title: 'Verify Email | Elite Choice Portal',
+    description: 'Confirm your email address for the Elite Choice portal.',
+    noIndex: true,
+  },
   notFound: {
     path: '/404',
     title: 'Page Not Found | Elite Choice Electromechanical',
