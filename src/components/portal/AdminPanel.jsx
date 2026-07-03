@@ -14,7 +14,8 @@ const TABS = ['employees', 'salaries', 'invoices', 'messages', 'suppliers', 'cre
 export function AdminPanel({
   dataLoading,
   adminTab, setAdminTab,
-  employees, salaries, credentials, suppliers, projects, invoices, messages, messagePagination,
+  employees, salaries, credentials, suppliers, projects, invoices, invoicePagination, fetchInvoices,
+  messages, messagePagination,
   modal, setModal, addSupModal, setAddSupModal, addPrjModal, setAddPrjModal,
   statusModal, setStatusModal,
   editEmp, openEditEmp,
@@ -24,7 +25,7 @@ export function AdminPanel({
   saveCred, deleteCredential, toggleUserActive,
   saveSupplier, deleteSupplier,
   saveProject, deleteProject,
-  updateStatus, printInvoice,
+  updateStatus, printInvoice, deleteInvoice,
   messageFilters, filterMessages, updateMessageStatus, deleteMessage,
   toast,
 }) {
@@ -78,9 +79,12 @@ export function AdminPanel({
             {adminTab === 'invoices' && (
               <InvoicesTab
                 invoices={invoices}
+                pagination={invoicePagination}
+                onPageChange={fetchInvoices}
                 projects={projects}
                 setStatusModal={setStatusModal}
                 printInvoice={printInvoice}
+                deleteInvoice={deleteInvoice}
               />
             )}
 

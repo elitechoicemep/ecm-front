@@ -4,11 +4,14 @@ import { Modal } from './Modal';
 import { Toast } from './Toast';
 import { inp, sel, INVOICE_STATUSES } from './utils';
 
-export function SupplierPortal({ user, invoices, projects, invForm, submitInvoice, handleFile, printInvoice, toast }) {
+export function SupplierPortal({ user, invoices, invoicePagination, fetchInvoices, projects, invForm, submitInvoice, handleFile, printInvoice, toast }) {
   const [invoiceModalOpen, setInvoiceModalOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState('all');
 
   const filteredInvoices = invoices.filter(inv => statusFilter === 'all' || inv.status === statusFilter);
+  const page = invoicePagination?.page || 1;
+  const totalPages = invoicePagination?.totalPages || 1;
+  const total = invoicePagination?.total ?? invoices.length;
 
   const handleSubmit = async () => {
     const saved = await submitInvoice();
@@ -113,6 +116,20 @@ export function SupplierPortal({ user, invoices, projects, invForm, submitInvoic
                   </article>
                 );
               })}
+            </div>
+          )}
+
+          {invoices.length > 0 && (
+            <div className="px-4 sm:px-6 py-4 border-t border-white/[0.06] flex flex-wrap items-center justify-between gap-3 text-[12px] text-white/45">
+              <div>Page {page} of {totalPages} - {total} total</div>
+              <div className="flex items-center gap-2">
+                <button onClick={() => fetchInvoices(Math.max(page - 1, 1))} disabled={page <= 1} className="px-3 py-1.5 rounded-md border border-white/10 text-white/60 disabled:opacity-35 disabled:cursor-not-allowed hover:border-[#C8922A]/40 hover:text-[#C8922A] transition-all">
+                  Previous
+                </button>
+                <button onClick={() => fetchInvoices(Math.min(page + 1, totalPages))} disabled={page >= totalPages} className="px-3 py-1.5 rounded-md border border-white/10 text-white/60 disabled:opacity-35 disabled:cursor-not-allowed hover:border-[#C8922A]/40 hover:text-[#C8922A] transition-all">
+                  Next
+                </button>
+              </div>
             </div>
           )}
         </section>

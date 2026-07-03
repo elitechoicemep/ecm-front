@@ -31,16 +31,19 @@ function isImageInvoice(inv) {
   return url.startsWith('data:image/') || ['jpg', 'jpeg', 'png', 'webp', 'gif'].includes(format);
 }
 
-export function InvoicesTab({ invoices, projects, setStatusModal, printInvoice }) {
+export function InvoicesTab({ invoices, pagination, onPageChange, projects, setStatusModal, printInvoice, deleteInvoice }) {
   const [previewInvoice, setPreviewInvoice] = useState(null);
   const previewUrl = previewInvoice ? invoiceFileUrl(previewInvoice) : '';
+  const page = pagination?.page || 1;
+  const totalPages = pagination?.totalPages || 1;
+  const total = pagination?.total ?? invoices.length;
 
   return (
     <>
       <div className="bg-[#112540]/80 border border-[#C8922A]/15 rounded-xl overflow-hidden">
         <div className="px-5 py-4 border-b border-[#C8922A]/15">
           <h3 className="font-bold text-[15px] text-white">
-            All Supplier Invoices <span className="text-white/40 text-[12px] font-normal">({invoices.length})</span>
+            All Supplier Invoices <span className="text-white/40 text-[12px] font-normal">({total})</span>
           </h3>
         </div>
         <div className="overflow-x-auto">
@@ -94,6 +97,12 @@ export function InvoicesTab({ invoices, projects, setStatusModal, printInvoice }
                         >
                           Print
                         </button>
+                        <button
+                          onClick={() => { if (window.confirm('Delete this invoice? This cannot be undone.')) deleteInvoice(inv.invoiceId); }}
+                          className="px-3 py-1.5 border border-red-400/30 rounded-md text-[11px] text-red-300 hover:bg-red-500/10 transition-all"
+                        >
+                          Delete
+                        </button>
                       </div>
                     </TD>
                   </tr>
@@ -101,6 +110,18 @@ export function InvoicesTab({ invoices, projects, setStatusModal, printInvoice }
               })}
             </tbody>
           </table>
+        </div>
+
+        <div className="px-5 py-4 border-t border-white/[0.06] flex flex-wrap items-center justify-between gap-3 text-[12px] text-white/45">
+          <div>Page {page} of {totalPages} - {total} total</div>
+          <div className="flex items-center gap-2">
+            <button onClick={() => onPageChange(Math.max(page - 1, 1))} disabled={page <= 1} className="px-3 py-1.5 rounded-md border border-white/10 text-white/60 disabled:opacity-35 disabled:cursor-not-allowed hover:border-[#C8922A]/40 hover:text-[#C8922A] transition-all">
+              Previous
+            </button>
+            <button onClick={() => onPageChange(Math.min(page + 1, totalPages))} disabled={page >= totalPages} className="px-3 py-1.5 rounded-md border border-white/10 text-white/60 disabled:opacity-35 disabled:cursor-not-allowed hover:border-[#C8922A]/40 hover:text-[#C8922A] transition-all">
+              Next
+            </button>
+          </div>
         </div>
       </div>
 

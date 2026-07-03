@@ -87,8 +87,8 @@ export const api = {
   getSlip: (month, year) => get(`/slip?month=${month}&year=${year}`),
 
   // ── Supplier ──────────────────────────────────────────────────
-  getMyInvoices: ()   => get('/supplier/invoices'),
-  submitInvoice: body => post('/supplier/invoices', body),
+  getMyInvoices: (page = 1) => get(`/supplier/invoices?page=${page}`),
+  submitInvoice: body        => post('/supplier/invoices', body),
 
   // ── Shared ────────────────────────────────────────────────────
   getProjectList: () => get('/projects'),
@@ -133,6 +133,7 @@ export const api = {
   updateMessageStatus:  (id, status) => patch(`/admin/messages/${id}/status`, { status }),
   deleteMessage:        id => del(`/admin/messages/${id}`),
 
-  getInvoices:         ()           => get('/admin/invoices'),
-  updateInvoiceStatus: (id, status) => patch(`/admin/invoices/${id}/status`, { status }),
+  getInvoices:         (page = 1)    => get(`/admin/invoices?page=${page}`),
+  updateInvoiceStatus: (id, status)  => patch(`/admin/invoices/${id}/status`, { status }),
+  deleteInvoice:       id            => del(`/admin/invoices/${id}`),
 };

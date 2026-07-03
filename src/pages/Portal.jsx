@@ -36,6 +36,7 @@ export default function Portal() {
   const [suppliers,   setSuppliers]   = useState([]);
   const [projects,    setProjects]    = useState([]);
   const [invoices,    setInvoices]    = useState([]);
+  const [invoicePagination, setInvoicePagination] = useState({ page: 1, limit: 15, total: 0, totalPages: 1 });
   const [messages,    setMessages]    = useState([]);
   const [messagePagination, setMessagePagination] = useState({ page: 1, limit: 10, total: 0, totalPages: 1 });
   const [dataLoading, setDataLoading] = useState(false);
@@ -78,7 +79,7 @@ export default function Portal() {
 
     const onExpired = () => {
       setUser(null);
-      setInvoices([]); setMessages([]); setMessagePagination({ page: 1, limit: 10, total: 0, totalPages: 1 }); setEmployees([]); setSalaries([]);
+      setInvoices([]); setInvoicePagination({ page: 1, limit: 15, total: 0, totalPages: 1 }); setMessages([]); setMessagePagination({ page: 1, limit: 10, total: 0, totalPages: 1 }); setEmployees([]); setSalaries([]);
       setCredentials([]); setSuppliers([]); setProjects([]);
     };
     window.addEventListener('auth:expired', onExpired);
@@ -102,7 +103,8 @@ export default function Portal() {
       ])
         .then(([emps, sals, creds, sups, invs, msgs, projs]) => {
           setEmployees(emps); setSalaries(sals); setCredentials(creds);
-          setSuppliers(sups); setInvoices(invs); setMessages(msgs.messages || []); setMessagePagination(msgs.pagination || { page: 1, limit: 10, total: 0, totalPages: 1 }); setProjects(projs);
+          setSuppliers(sups); setInvoices(invs.invoices || []); setInvoicePagination(invs.pagination || { page: 1, limit: 15, total: 0, totalPages: 1 });
+          setMessages(msgs.messages || []); setMessagePagination(msgs.pagination || { page: 1, limit: 10, total: 0, totalPages: 1 }); setProjects(projs);
         })
         .catch(err => showToast(err.message, 'error'))
         .finally(() => setDataLoading(false));
@@ -110,10 +112,21 @@ export default function Portal() {
 
     if (user.role === 'supplier') {
       Promise.all([api.getMyInvoices(), api.getProjectList()])
-        .then(([invs, projs]) => { setInvoices(invs); setProjects(projs); })
+        .then(([invs, projs]) => {
+          setInvoices(invs.invoices || []); setInvoicePagination(invs.pagination || { page: 1, limit: 15, total: 0, totalPages: 1 });
+          setProjects(projs);
+        })
         .catch(err => showToast(err.message, 'error'));
     }
   }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const fetchInvoices = async (page = 1) => {
+    try {
+      const data = user.role === 'admin' ? await api.getInvoices(page) : await api.getMyInvoices(page);
+      setInvoices(data.invoices || []);
+      setInvoicePagination(data.pagination || { page: 1, limit: 15, total: 0, totalPages: 1 });
+    } catch (err) { showToast(err.message, 'error'); }
+  };
 
   /* ══ HANDLERS ══════════════════════════════════════════════════ */
 
@@ -179,14 +192,14 @@ export default function Portal() {
     const { projectId, invoiceNo, amount, fileDataUrl, _fileName } = invForm.values;
     if (!projectId || !invoiceNo || !amount || !fileDataUrl) { showToast('Please fill all required fields and upload the invoice', 'error'); return false; }
     try {
-      const data = await api.submitInvoice({
+      await api.submitInvoice({
         projectId, invoiceNo,
         amount: +amount,
         company: user.company,
         attachmentDataUrl: fileDataUrl,
         fileName: _fileName || undefined,
       });
-      setInvoices(prev => [data.invoice, ...prev]);
+      await fetchInvoices(1);
       invForm.reset();
       showToast('Invoice submitted successfully');
       return true;
@@ -235,6 +248,14 @@ export default function Portal() {
       ));
       setStatusModal(null);
       showToast('Status updated');
+    } catch (err) { showToast(err.message, 'error'); }
+  };
+
+  const deleteInvoice = async (invoiceId) => {
+    try {
+      await api.deleteInvoice(invoiceId);
+      await fetchInvoices(invoicePagination.page);
+      showToast('Invoice deleted');
     } catch (err) { showToast(err.message, 'error'); }
   };
 
@@ -446,7 +467,7 @@ export default function Portal() {
   if (user.role === 'supplier') return (
     <SupplierPortal
       user={user}
-      invoices={invoices} projects={projects}
+      invoices={invoices} invoicePagination={invoicePagination} fetchInvoices={fetchInvoices} projects={projects}
       invForm={invForm} submitInvoice={submitInvoice} handleFile={handleFile}
       printInvoice={printInvoice}
       toast={toast}
@@ -458,7 +479,8 @@ export default function Portal() {
       dataLoading={dataLoading}
       adminTab={adminTab} setAdminTab={setAdminTab}
       employees={employees} salaries={salaries} credentials={credentials}
-      suppliers={suppliers} projects={projects} invoices={invoices} messages={messages} messagePagination={messagePagination}
+      suppliers={suppliers} projects={projects} invoices={invoices} invoicePagination={invoicePagination} fetchInvoices={fetchInvoices}
+      messages={messages} messagePagination={messagePagination}
       modal={modal} setModal={setModal}
       addSupModal={addSupModal} setAddSupModal={setAddSupModal}
       addPrjModal={addPrjModal} setAddPrjModal={setAddPrjModal}
@@ -471,7 +493,7 @@ export default function Portal() {
       saveCred={saveCred} deleteCredential={deleteCredential} toggleUserActive={toggleUserActive}
       saveSupplier={saveSupplier} deleteSupplier={deleteSupplier}
       saveProject={saveProject} deleteProject={deleteProject}
-      updateStatus={updateStatus} printInvoice={printInvoice}
+      updateStatus={updateStatus} printInvoice={printInvoice} deleteInvoice={deleteInvoice}
       messageFilters={messageFilters} filterMessages={filterMessages} updateMessageStatus={updateMessageStatus} deleteMessage={deleteMessage}
       toast={toast}
     />
