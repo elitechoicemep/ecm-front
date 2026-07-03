@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { api } from '../api';
 import { useForm } from '../hooks/useForm';
 import { buildSlipHTML, INVOICE_STATUSES } from '../components/portal/utils';
@@ -20,6 +21,7 @@ function normaliseSession(data) {
 }
 
 export default function Portal() {
+  const navigate = useNavigate();
 
   /* ── Auth ── */
   const [user,         setUser]         = useState(null);
@@ -125,6 +127,10 @@ export default function Portal() {
       setUser(sessionUser);
       window.dispatchEvent(new CustomEvent('auth:changed', { detail: { user: sessionUser } }));
     } catch (err) {
+      if (err.status === 403 && /verify/i.test(err.message || '')) {
+        navigate('/verify-pending', { state: { identifier: username.trim() } });
+        return;
+      }
       setLoginErr(err.message || 'Invalid username or password.');
     } finally {
       setLoginLoading(false);

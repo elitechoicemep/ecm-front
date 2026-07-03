@@ -1,12 +1,8 @@
 import { useState, useRef, useCallback } from 'react';
-import emailjs from '@emailjs/browser';
+import { api } from '../api';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 
-const EMAILJS_SERVICE_ID      = 'YOUR_SERVICE_ID';
-const EMAILJS_CAREER_TEMPLATE = 'YOUR_CAREER_TEMPLATE_ID';
-const EMAILJS_PUBLIC_KEY      = 'YOUR_PUBLIC_KEY';
-
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB — must match backend validators/careers.validator.js
 const ALLOWED_TYPES = [
   'application/pdf',
   'application/msword',
@@ -192,41 +188,28 @@ export default function Careers() {
     setError('');
 
     try {
-      // Build template params
-      const templateParams = {
-        from_name:  form.name,
-        from_email: form.email,
-        phone:      form.phone    || 'Not provided',
-        position:   form.position || 'Not specified',
-        about:      form.about,
-        reply_to:   form.email,
-        to_email:   'inquiry@elitechoicemep.com',
-        cv_name:    cvFile ? cvFile.name : 'No CV attached',
-        cv_size:    cvFile ? formatBytes(cvFile.size) : '',
+      const payload = {
+        name:     form.name,
+        email:    form.email,
+        phone:    form.phone,
+        position: form.position,
+        about:    form.about,
       };
 
-      // If CV attached, encode to base64 and add to params
-      // Note: EmailJS file attachment requires Pro plan.
-      // The base64 string is included as a template variable (cv_data)
-      // which you can use in your EmailJS template or handle server-side.
       if (cvFile) {
-        const base64 = await fileToBase64(cvFile);
-        templateParams.cv_data = base64; // use in EmailJS template if on Pro plan
+        payload.cvName = cvFile.name;
+        payload.cvType = cvFile.type;
+        payload.cvData = await fileToBase64(cvFile);
       }
 
-      await emailjs.send(
-        EMAILJS_SERVICE_ID,
-        EMAILJS_CAREER_TEMPLATE,
-        templateParams,
-        EMAILJS_PUBLIC_KEY
-      );
+      await api.submitCareerApplication(payload);
 
       setSent(true);
       setForm({ name: '', phone: '', email: '', position: '', about: '' });
       setCvFile(null);
     } catch (err) {
-      setError('Something went wrong. Please try again or email us directly.');
-      console.error('EmailJS error:', err);
+      setError(err.message || 'Something went wrong. Please try again or email us directly.');
+      console.error('Career application submit error:', err);
     } finally {
       setLoading(false);
     }
@@ -397,15 +380,6 @@ export default function Careers() {
                   'Submit Application →'
                 )}
               </button>
-
-              {/* EmailJS note for devs */}
-              {/* 
-                To receive the CV attachment in email:
-                - EmailJS Pro plan required for file/attachment support.
-                - Add {{cv_name}} and {{cv_data}} variables to your EmailJS template.
-                - Alternatively, switch to a backend endpoint (Node/Express) 
-                  and use nodemailer with buffer attachment from base64.
-              */}
             </form>
           )}
         </div>

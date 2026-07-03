@@ -13,6 +13,7 @@ import Contact  from './pages/Contact';
 import Portal        from './pages/Portal';
 import ResetPassword from './pages/ResetPassword';
 import VerifyEmail   from './pages/VerifyEmail';
+import VerifyPending from './pages/VerifyPending';
 import { SEO } from './seo';
 
 // Scroll to top on every route change
@@ -51,6 +52,7 @@ export default function App() {
         <Route path="/portal"    element={<Navigate to="/dashboard" replace />} />
         <Route path="/reset-password" element={<Layout isPortal seoKey="resetPassword"><ResetPassword /></Layout>} />
         <Route path="/verify-email"   element={<Layout isPortal seoKey="verifyEmail"><VerifyEmail /></Layout>} />
+        <Route path="/verify-pending" element={<Layout isPortal seoKey="verifyPending"><VerifyPending /></Layout>} />
         {/* 404 */}
         <Route path="*" element={
           <Layout seoKey="notFound">

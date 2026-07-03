@@ -81,6 +81,7 @@ export const api = {
   resetPassword:       body   => post('/auth/reset-password',  body),
   resendVerification:  body   => post('/auth/resend-verification', body),
   submitContactMessage: body   => post('/contact', body),
+  submitCareerApplication: body => post('/careers', body),
 
   // ── Employee ──────────────────────────────────────────────────
   getSlip: (month, year) => get(`/slip?month=${month}&year=${year}`),

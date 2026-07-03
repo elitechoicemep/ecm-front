@@ -82,7 +82,8 @@ export default function Navbar() {
     const confirmLogout = async () => {
         try {
             await api.logout();
-        } catch {
+        } catch (err) {
+            console.error('[logout] server-side logout failed:', err.message);
         }
         setUser(null);
         setConfirmOpen(false);

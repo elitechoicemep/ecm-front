@@ -133,6 +133,12 @@ export const seoPages = {
     description: 'Confirm your email address for the Elite Choice portal.',
     noIndex: true,
   },
+  verifyPending: {
+    path: '/verify-pending',
+    title: 'Verify Your Email | Elite Choice Portal',
+    description: 'Verify your email address to access the Elite Choice portal.',
+    noIndex: true,
+  },
   notFound: {
     path: '/404',
     title: 'Page Not Found | Elite Choice Electromechanical',
