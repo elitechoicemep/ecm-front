@@ -209,34 +209,104 @@ export default function Portal() {
     }
   };
 
-  const printInvoice = (inv) => {
+  const printInvoice = async (inv) => {
+    const { jsPDF } = await import('jspdf');
     const proj      = projects.find(p => p.projectId === inv.projectId);
     const statusObj = INVOICE_STATUSES.find(s => s.key === inv.status);
     const fmtAED    = n => 'AED ' + Number(n).toLocaleString('en-AE', { minimumFractionDigits: 2 });
-    const html = [
-      '<!DOCTYPE html><html><head><meta charset="UTF-8"/>',
-      '<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700;800&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet"/>',
-      '<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Barlow,sans-serif;color:#1a2b3c;background:#fff;padding:40px;max-width:800px;margin:0 auto}.hd{border-bottom:3px solid #C8922A;padding-bottom:20px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:flex-start}.co{font-family:"Barlow Condensed",sans-serif;font-size:22px;font-weight:800;color:#0B1D33}.co span{color:#C8922A}.sub{font-size:12px;color:#64748b;margin-top:3px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px}.box{border:1px solid #e2e8f0;border-radius:8px;padding:16px}.bl{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#C8922A;margin-bottom:6px}.bv{font-size:14px;font-weight:700;color:#0B1D33}.amt{background:#faf7f0;border:1px solid #C8922A;border-radius:8px;padding:18px 22px;display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.aml{font-size:14px;font-weight:700;color:#0B1D33}.amv{font-family:monospace;font-size:26px;font-weight:800;color:#C8922A}.badge{display:inline-block;padding:6px 16px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;border:1px solid #C8922A;color:#C8922A}.foot{margin-top:24px;padding-top:14px;border-top:1px solid #e2e8f0;font-size:10px;color:#94a3b8;display:flex;justify-content:space-between}@media print{body{padding:24px}@page{margin:1.5cm;size:A4}}</style>',
-      '</head><body>',
-      `<div class="hd"><div><div class="co">ELITE<span>CHOICE</span> Electromechanical Contracting LLC</div><div class="sub">Invoice Receipt / Payment Tracking</div></div><span class="badge">${inv.invoiceId || inv.id}</span></div>`,
-      '<div class="grid">',
-      `<div class="box"><div class="bl">Supplier / Company</div><div class="bv">${inv.company}</div></div>`,
-      `<div class="box"><div class="bl">Invoice No.</div><div class="bv">${inv.invoiceNo}</div></div>`,
-      `<div class="box"><div class="bl">Project</div><div class="bv">${proj?.name || inv.projectId}</div></div>`,
-      `<div class="box"><div class="bl">Submission Date</div><div class="bv">${inv.date}</div></div>`,
-      '</div>',
-      `<div class="amt"><div class="aml">Invoice Amount</div><div class="amv">${fmtAED(inv.amount)}</div></div>`,
-      `<div class="box" style="margin-bottom:20px"><div class="bl">Payment Status</div><div class="bv" style="color:#C8922A;margin-top:4px">${statusObj?.label || inv.status}</div></div>`,
-      inv.note ? `<div class="box" style="margin-bottom:20px"><div class="bl">Note</div><div class="bv" style="font-weight:400;font-size:13px">${inv.note}</div></div>` : '',
-      `<div class="foot"><span>Elite Choice Electromechanical Contracting LLC — Supplier Portal</span><span>Printed: ${new Date().toLocaleDateString('en-AE')}</span></div>`,
-      '</body></html>',
-    ].join('');
-    const blob = new Blob([html], { type: 'text/html' });
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href = url; a.download = `Invoice_${inv.invoiceNo}_${inv.invoiceId || inv.id}.html`;
-    document.body.appendChild(a); a.click();
-    document.body.removeChild(a); URL.revokeObjectURL(url);
+
+    const navy  = [11, 29, 51];
+    const gold  = [200, 146, 42];
+    const slate = [100, 116, 139];
+    const line  = [226, 232, 240];
+
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+    const pageW = doc.internal.pageSize.getWidth();
+    const marginX = 18;
+    let y = 22;
+
+    // Header
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(18); doc.setTextColor(...navy);
+    doc.text('ELITE CHOICE', marginX, y);
+    const eliteW = doc.getTextWidth('ELITE CHOICE ');
+    doc.setTextColor(...gold);
+    doc.text('Electromechanical Contracting LLC', marginX + eliteW, y);
+    doc.setTextColor(...slate); doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+    doc.text('Invoice Receipt / Payment Tracking', marginX, y + 6);
+
+    const badgeText = inv.invoiceId || inv.id || '';
+    doc.setFontSize(10); doc.setTextColor(...gold);
+    const badgeW = doc.getTextWidth(badgeText) + 10;
+    doc.roundedRect(pageW - marginX - badgeW, y - 8, badgeW, 8, 4, 4);
+    doc.text(badgeText, pageW - marginX - badgeW / 2, y - 2.7, { align: 'center' });
+
+    y += 12;
+    doc.setDrawColor(...gold); doc.setLineWidth(0.8);
+    doc.line(marginX, y, pageW - marginX, y);
+    y += 12;
+
+    // Info boxes (2x2 grid)
+    const boxW = (pageW - marginX * 2 - 8) / 2;
+    const boxH = 20;
+    const boxes = [
+      ['SUPPLIER / COMPANY', inv.company],
+      ['INVOICE NO.', inv.invoiceNo],
+      ['PROJECT', proj?.name || inv.projectId],
+      ['SUBMISSION DATE', inv.date],
+    ];
+    boxes.forEach((b, i) => {
+      const col = i % 2, row = Math.floor(i / 2);
+      const bx = marginX + col * (boxW + 8);
+      const by = y + row * (boxH + 6);
+      doc.setDrawColor(...line); doc.setLineWidth(0.3);
+      doc.roundedRect(bx, by, boxW, boxH, 2, 2);
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(...gold);
+      doc.text(b[0], bx + 5, by + 7);
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor(...navy);
+      doc.text(String(b[1] ?? '-'), bx + 5, by + 15);
+    });
+    y += boxH * 2 + 6 + 10;
+
+    // Amount panel
+    doc.setFillColor(250, 247, 240); doc.setDrawColor(...gold); doc.setLineWidth(0.4);
+    doc.roundedRect(marginX, y, pageW - marginX * 2, 18, 2, 2, 'FD');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor(...navy);
+    doc.text('Invoice Amount', marginX + 6, y + 11);
+    doc.setFontSize(16); doc.setTextColor(...gold);
+    doc.text(fmtAED(inv.amount), pageW - marginX - 6, y + 12, { align: 'right' });
+    y += 28;
+
+    // Payment status box
+    doc.setDrawColor(...line); doc.setLineWidth(0.3);
+    doc.roundedRect(marginX, y, pageW - marginX * 2, 18, 2, 2);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(...gold);
+    doc.text('PAYMENT STATUS', marginX + 6, y + 7);
+    doc.setFontSize(11); doc.setTextColor(...gold);
+    doc.text(statusObj?.label || inv.status, marginX + 6, y + 15);
+    y += 24;
+
+    if (inv.note) {
+      doc.setDrawColor(...line); doc.setLineWidth(0.3);
+      const noteLines = doc.splitTextToSize(inv.note, pageW - marginX * 2 - 12);
+      const noteH = 12 + noteLines.length * 5;
+      doc.roundedRect(marginX, y, pageW - marginX * 2, noteH, 2, 2);
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(...gold);
+      doc.text('NOTE', marginX + 6, y + 7);
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(...navy);
+      doc.text(noteLines, marginX + 6, y + 14);
+      y += noteH + 6;
+    }
+
+    // Footer
+    const pageH = doc.internal.pageSize.getHeight();
+    const footY = pageH - 16;
+    doc.setDrawColor(...line); doc.setLineWidth(0.3);
+    doc.line(marginX, footY - 6, pageW - marginX, footY - 6);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(...slate);
+    doc.text('Elite Choice Electromechanical Contracting LLC — Supplier Portal', marginX, footY);
+    doc.text(`Printed: ${new Date().toLocaleDateString('en-AE')}`, pageW - marginX, footY, { align: 'right' });
+
+    doc.save(`Invoice_${inv.invoiceNo}_${inv.invoiceId || inv.id}.pdf`);
     showToast('Invoice downloaded');
   };
 

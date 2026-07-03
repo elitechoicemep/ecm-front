@@ -135,7 +135,7 @@ export default function Navbar() {
             <nav
                 className={`fixed top-0 left-0 right-0 z-50 h-[68px] transition-all duration-300 ${scrolled ? 'bg-[#102037] shadow-[0_4px_30px_rgba(0,0,0,0.4)]' : 'bg-[#102037]'} border-b border-[#C8922A]/20`}
             >
-                <div className="max-w-[1280px] mx-auto px-3 md:px-8 h-full flex items-center justify-between">
+                <div className=" mx-auto px-3 md:px-8 h-full flex items-center justify-between">
 
                     <div className="flex items-center h-full shrink-0">
                         <button
