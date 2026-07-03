@@ -35,7 +35,7 @@ export function AdminPanel({
 
   return (
     <div className="min-h-screen pt-[68px] bg-[#0B1D33]">
-      <div className="max-w-[1100px] mx-auto px-5 md:px-10 py-10">
+      <div className="container mx-auto px-5 md:px-10 py-10">
         <h2 className="font-condensed text-[28px] font-extrabold text-white mb-1">Admin Dashboard</h2>
         <p className="text-[13px] text-white/50 mb-8">Manage employees, salary records and payment status.</p>
 
