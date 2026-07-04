@@ -8,7 +8,7 @@ const licenses = [
     title: 'Trade License',
     arabic: 'رخصة تجارية',
     detail: 'Valid: 19 Nov 2019 – 19 Nov 2026',
-    img: '/assets/images/ECEM_LICENSE_01.png',
+    img: '/assets/images/ECEM_LICENSE_01.webp',
   },
   {
     num: '02',
@@ -16,7 +16,7 @@ const licenses = [
     title: 'Trading Register Certificate',
     arabic: 'شهادة سجل تجارية',
     detail: 'Issue Date: 19 Nov 2019',
-    img: '/assets/images/ECEM_LICENSE_02.png',
+    img: '/assets/images/ECEM_LICENSE_02.webp',
   },
   {
     num: '03',
@@ -24,7 +24,7 @@ const licenses = [
     title: 'Real Beneficiary Certificate',
     arabic: 'سجل المستفيد الحقيقي',
     detail: 'Date: 27 Nov 2025',
-    img: '/assets/images/ECEM_LICENSE_03.png',
+    img: '/assets/images/ECEM_LICENSE_03.webp',
   },
 ];
 

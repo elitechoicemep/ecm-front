@@ -10,7 +10,7 @@ const projects = [
     tag: 'Electrical · HVAC',
     type: 'Electrical',
     desc: 'Supply and installation of complete Electrical & HVAC systems for a large academic facility in Silicon Oasis, Dubai.',
-    img: '/assets/images/dess_scl.jpg',
+    img: '/assets/images/dess_scl.webp',
   },
   {
     id: 2,
