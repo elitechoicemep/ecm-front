@@ -12,7 +12,7 @@ const services = [
     title: 'Electrical Works',
     sub: 'Power · Cabling · Lighting · Panels',
     desc: 'Safe, code-compliant electrical systems from power distribution to intelligent lighting. Certified for every project type across the UAE.',
-    img: '/assets/images/electrical.jpg',
+    img: '/assets/images/electrical.webp',
   },
   {
     icon: (
@@ -23,7 +23,7 @@ const services = [
     title: 'Plumbing Systems',
     sub: 'Water Supply · Drainage · Sanitary',
     desc: 'Complete water supply, drainage and sanitary systems. Reliable pipework, fixtures, pumps and treatment for all project types.',
-    img: '/assets/images/plumbing.jpg',
+    img: '/assets/images/plumbing.webp',
   },
   {
     icon: (
@@ -34,7 +34,7 @@ const services = [
     title: 'HVAC & Ducting',
     sub: 'AC · Ducting · Ventilation · Maintenance',
     desc: 'Climate control solutions including air conditioning, mechanical ventilation and custom duct fabrication for comfortable environments.',
-    img: '/assets/images/hvac.jpg',
+    img: '/assets/images/hvac.webp',
   },
   {
     icon: (
@@ -45,7 +45,7 @@ const services = [
     title: 'Full MEP Turnkey',
     sub: 'Design → Supply → Install → Handover',
     desc: 'Design to handover — we manage the complete MEP scope as a single accountable contractor, coordinated with civil works.',
-    img: '/assets/images/full_mep.jpg',
+    img: '/assets/images/full_mep.webp',
   },
 ];
 
@@ -56,7 +56,7 @@ const recentProjects = [
     client: 'DESS School',
     location: 'Silicon Oasis, Dubai',
     desc: 'Supply and installation of complete Electrical & HVAC systems for a large academic facility.',
-    img: '/assets/images/dess_scl.jpg',
+    img: '/assets/images/dess_scl.webp',
   },
   {
     tag: 'Full MEP',
