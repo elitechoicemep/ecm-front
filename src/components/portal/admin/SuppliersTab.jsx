@@ -41,7 +41,7 @@ export function SuppliersTab({ suppliers, projects, invoices, deleteSupplier, de
                   <TD><span className="text-[#C8922A] font-bold">{count}</span></TD>
                   <TD>
                     <button
-                      onClick={() => deleteSupplier(s.username)}
+                      onClick={() => { if (window.confirm(`Remove supplier "${s.company}"? This cannot be undone.`)) deleteSupplier(s.username); }}
                       className="px-3 py-1.5 border border-white/10 rounded-md text-[12px] text-white/50 hover:border-red-500 hover:text-red-400 transition-all"
                     >
                       ✕ Remove
@@ -65,7 +65,7 @@ export function SuppliersTab({ suppliers, projects, invoices, deleteSupplier, de
                 <div className="text-[12px] font-semibold text-white">{p.name}</div>
               </div>
               <button
-                onClick={() => deleteProject(p.projectId)}
+                onClick={() => { if (window.confirm(`Remove project "${p.name}"? This cannot be undone.`)) deleteProject(p.projectId); }}
                 className="ml-3 text-white/20 hover:text-red-400 transition-colors text-[11px]"
               >
                 ✕

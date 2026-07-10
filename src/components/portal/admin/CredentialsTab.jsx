@@ -63,12 +63,14 @@ export function CredentialsTab({ credentials, employees, deleteCredential, toggl
                         {c.isActive ? '⏸ Suspend' : '▶ Activate'}
                       </button>
                     )}
-                    <button
-                      onClick={() => deleteCredential(c.id)}
-                      className="px-3 py-1.5 border border-white/10 rounded-md text-[11px] text-white/50 hover:border-red-500 hover:text-red-400 transition-all"
-                    >
-                      ✕
-                    </button>
+                    {c.role !== 'admin' && (
+                      <button
+                        onClick={() => { if (window.confirm(`Delete user "${c.username}"? This cannot be undone.`)) deleteCredential(c.id); }}
+                        className="px-3 py-1.5 border border-white/10 rounded-md text-[11px] text-white/50 hover:border-red-500 hover:text-red-400 transition-all"
+                      >
+                        ✕
+                      </button>
+                    )}
                   </TD>
                 </tr>
               );

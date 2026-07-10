@@ -36,7 +36,7 @@ export function EmployeesTab({ employees, deleteEmployee, onAdd, onEdit }) {
                     ✏️ Edit
                   </button>
                   <button
-                    onClick={() => deleteEmployee(e.empId)}
+                    onClick={() => { if (window.confirm(`Remove employee "${e.name}" (${e.empId})? This cannot be undone.`)) deleteEmployee(e.empId); }}
                     className="px-3 py-1.5 border border-white/10 rounded-md text-[12px] text-white/50 hover:border-red-500 hover:text-red-400 transition-all"
                   >
                     ✕ Remove

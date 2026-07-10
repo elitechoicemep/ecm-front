@@ -46,7 +46,7 @@ export function SalariesTab({ salaries, employees, toggleSalaryStatus, deleteSal
                       Toggle
                     </button>
                     <button
-                      onClick={() => deleteSalary(s._id)}
+                      onClick={() => { if (window.confirm(`Delete salary record for ${s.empName || s.empId} (${MONTHS[s.month]} ${s.year})? This cannot be undone.`)) deleteSalary(s._id); }}
                       className="px-3 py-1.5 border border-white/10 rounded-md text-[12px] text-white/50 hover:border-red-500 hover:text-red-400 transition-all"
                     >
                       ✕
