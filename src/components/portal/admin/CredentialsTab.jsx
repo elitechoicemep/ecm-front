@@ -51,16 +51,18 @@ export function CredentialsTab({ credentials, employees, deleteCredential, toggl
                     </span>
                   </TD>
                   <TD>
-                    <button
-                      onClick={() => toggleUserActive(c.id, c.isActive)}
-                      className={`px-3 py-1.5 border rounded-md text-[11px] transition-all mr-2 ${
-                        c.isActive
-                          ? 'border-orange-500/30 text-orange-400 hover:bg-orange-500/10'
-                          : 'border-green-500/30 text-green-400 hover:bg-green-500/10'
-                      }`}
-                    >
-                      {c.isActive ? '⏸ Suspend' : '▶ Activate'}
-                    </button>
+                    {c.role !== 'admin' && (
+                      <button
+                        onClick={() => toggleUserActive(c.id, c.isActive)}
+                        className={`px-3 py-1.5 border rounded-md text-[11px] transition-all mr-2 ${
+                          c.isActive
+                            ? 'border-orange-500/30 text-orange-400 hover:bg-orange-500/10'
+                            : 'border-green-500/30 text-green-400 hover:bg-green-500/10'
+                        }`}
+                      >
+                        {c.isActive ? '⏸ Suspend' : '▶ Activate'}
+                      </button>
+                    )}
                     <button
                       onClick={() => deleteCredential(c.id)}
                       className="px-3 py-1.5 border border-white/10 rounded-md text-[11px] text-white/50 hover:border-red-500 hover:text-red-400 transition-all"

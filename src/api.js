@@ -80,6 +80,7 @@ export const api = {
   forgotPassword:      body   => post('/auth/forgot-password', body),
   resetPassword:       body   => post('/auth/reset-password',  body),
   resendVerification:  body   => post('/auth/resend-verification', body),
+  changePassword:      body   => post('/auth/change-password', body),
   submitContactMessage: body   => post('/contact', body),
   submitCareerApplication: body => post('/careers', body),
 

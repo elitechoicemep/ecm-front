@@ -34,6 +34,11 @@ export default function Navbar() {
     const [accountOpen, setAccountOpen] = useState(false);
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [user, setUser] = useState(null);
+    const [pwdOpen, setPwdOpen] = useState(false);
+    const [pwdForm, setPwdForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+    const [pwdError, setPwdError] = useState('');
+    const [pwdSuccess, setPwdSuccess] = useState('');
+    const [pwdLoading, setPwdLoading] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -79,6 +84,48 @@ export default function Navbar() {
     const initial = (displayName || user?.username || 'U').charAt(0).toUpperCase();
     const accountLine = [displayName, user?.email || user?.username].filter(Boolean).join(' • ');
 
+    const closePwdModal = () => {
+        setPwdOpen(false);
+        setPwdForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+        setPwdError('');
+        setPwdSuccess('');
+    };
+
+    const submitChangePassword = async (e) => {
+        e.preventDefault();
+        setPwdError('');
+        setPwdSuccess('');
+
+        const { currentPassword, newPassword, confirmPassword } = pwdForm;
+        if (!currentPassword || !newPassword || !confirmPassword) {
+            setPwdError('Please fill in all fields.');
+            return;
+        }
+        if (newPassword.length < 6) {
+            setPwdError('New password must be at least 6 characters.');
+            return;
+        }
+        if (newPassword !== confirmPassword) {
+            setPwdError('New password and confirmation do not match.');
+            return;
+        }
+        if (newPassword === currentPassword) {
+            setPwdError('New password must be different from the current password.');
+            return;
+        }
+
+        setPwdLoading(true);
+        try {
+            await api.changePassword({ currentPassword, newPassword });
+            setPwdSuccess('Password changed successfully.');
+            setPwdForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+        } catch (err) {
+            setPwdError(err.message || 'Failed to change password.');
+        } finally {
+            setPwdLoading(false);
+        }
+    };
+
     const confirmLogout = async () => {
         try {
             await api.logout();
@@ -121,6 +168,13 @@ export default function Navbar() {
                     >
                         Dashboard
                     </Link>
+                    <button
+                        type="button"
+                        onClick={() => { setPwdOpen(true); setAccountOpen(false); }}
+                        className="w-full text-left px-4 py-3 text-[13px] font-bold text-white/70 hover:bg-[#C8922A]/10 hover:text-[#C8922A] transition-colors border-t border-white/10"
+                    >
+                        Change Password
+                    </button>
                     <button
                         type="button"
                         onClick={() => setConfirmOpen(true)}
@@ -264,6 +318,60 @@ export default function Navbar() {
                                 Logout
                             </button>
                         </div>
+                    </div>
+                </div>)}
+
+            {pwdOpen && (<div className="fixed inset-0 z-[220] bg-black/75 flex items-center justify-center p-5"
+                               onClick={closePwdModal}>
+                    <div
+                        className="w-full max-w-[400px] rounded-xl bg-[#112540] border border-[#C8922A]/20 p-6 shadow-[0_24px_60px_rgba(0,0,0,0.5)]"
+                        onClick={e => e.stopPropagation()}>
+                        <h3 className="font-condensed text-[20px] font-extrabold text-white mb-2">Change Password</h3>
+                        <p className="text-[13px] text-white/50 mb-5">Update the password for your account.</p>
+
+                        <form onSubmit={submitChangePassword} className="space-y-3">
+                            <input
+                                type="password"
+                                placeholder="Current password"
+                                value={pwdForm.currentPassword}
+                                onChange={e => setPwdForm(f => ({ ...f, currentPassword: e.target.value }))}
+                                className="w-full px-3 py-2.5 rounded-lg bg-[#0B1D33] border border-white/10 text-[13px] text-white placeholder-white/30 focus:outline-none focus:border-[#C8922A]/60"
+                            />
+                            <input
+                                type="password"
+                                placeholder="New password"
+                                value={pwdForm.newPassword}
+                                onChange={e => setPwdForm(f => ({ ...f, newPassword: e.target.value }))}
+                                className="w-full px-3 py-2.5 rounded-lg bg-[#0B1D33] border border-white/10 text-[13px] text-white placeholder-white/30 focus:outline-none focus:border-[#C8922A]/60"
+                            />
+                            <input
+                                type="password"
+                                placeholder="Confirm new password"
+                                value={pwdForm.confirmPassword}
+                                onChange={e => setPwdForm(f => ({ ...f, confirmPassword: e.target.value }))}
+                                className="w-full px-3 py-2.5 rounded-lg bg-[#0B1D33] border border-white/10 text-[13px] text-white placeholder-white/30 focus:outline-none focus:border-[#C8922A]/60"
+                            />
+
+                            {pwdError && <p className="text-[12px] font-semibold text-red-400">{pwdError}</p>}
+                            {pwdSuccess && <p className="text-[12px] font-semibold text-green-400">{pwdSuccess}</p>}
+
+                            <div className="flex justify-end gap-3 pt-2">
+                                <button
+                                    type="button"
+                                    onClick={closePwdModal}
+                                    className="px-4 py-2 rounded-lg border border-white/10 text-[12px] font-bold text-white/60 hover:text-white hover:border-white/25 transition-all"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    disabled={pwdLoading}
+                                    className="px-4 py-2 rounded-lg bg-[#C8922A] text-[12px] font-bold text-[#0B1D33] hover:bg-[#E5A93A] transition-colors disabled:opacity-50"
+                                >
+                                    {pwdLoading ? 'Saving…' : 'Save Password'}
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>)}
         </>);
