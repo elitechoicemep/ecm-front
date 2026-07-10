@@ -438,6 +438,9 @@ export default function Portal() {
   const saveCred = async () => {
     const { username, password, role, empId, email } = credForm.values;
     if (!username || !password) { showToast('Fill all fields', 'error'); return; }
+    if (role === 'admin' && !window.confirm(`Grant full admin access to "${username}"? Admins can manage all users, salaries, and cannot be suspended or deleted by other admins.`)) {
+      return;
+    }
     try {
       await api.addCredential({
         username, password, role,
