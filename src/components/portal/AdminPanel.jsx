@@ -25,7 +25,7 @@ export function AdminPanel({
   saveCred, deleteCredential, toggleUserActive,
   saveSupplier, deleteSupplier,
   saveProject, deleteProject,
-  updateStatus, printInvoice, deleteInvoice,
+  updateStatus, printInvoice, deleteInvoice, uploadInvoiceAttachment, deleteInvoiceAttachment,
   messageFilters, filterMessages, updateMessageStatus, deleteMessage,
   toast,
 }) {
@@ -85,6 +85,8 @@ export function AdminPanel({
                 setStatusModal={setStatusModal}
                 printInvoice={printInvoice}
                 deleteInvoice={deleteInvoice}
+                uploadInvoiceAttachment={uploadInvoiceAttachment}
+                deleteInvoiceAttachment={deleteInvoiceAttachment}
               />
             )}
 

@@ -329,6 +329,30 @@ export default function Portal() {
     } catch (err) { showToast(err.message, 'error'); }
   };
 
+  const uploadInvoiceAttachment = async (invoiceId, { attachmentDataUrl, fileName }) => {
+    try {
+      const { invoice } = await api.addInvoiceAttachment(invoiceId, { attachmentDataUrl, fileName });
+      setInvoices(prev => prev.map(inv => (inv.invoiceId || inv.id) === invoiceId ? invoice : inv));
+      showToast('Invoice document uploaded');
+      return true;
+    } catch (err) {
+      showToast(err.message, 'error');
+      return false;
+    }
+  };
+
+  const deleteInvoiceAttachment = async (invoiceId, index) => {
+    try {
+      const { invoice } = await api.deleteInvoiceAttachment(invoiceId, index);
+      setInvoices(prev => prev.map(inv => (inv.invoiceId || inv.id) === invoiceId ? invoice : inv));
+      showToast('Document deleted');
+      return true;
+    } catch (err) {
+      showToast(err.message, 'error');
+      return false;
+    }
+  };
+
   const filterMessages = async (filters) => {
     const nextFilters = { ...messageFilters, ...filters };
     setMessageFilters(nextFilters);
@@ -567,6 +591,7 @@ export default function Portal() {
       saveSupplier={saveSupplier} deleteSupplier={deleteSupplier}
       saveProject={saveProject} deleteProject={deleteProject}
       updateStatus={updateStatus} printInvoice={printInvoice} deleteInvoice={deleteInvoice}
+      uploadInvoiceAttachment={uploadInvoiceAttachment} deleteInvoiceAttachment={deleteInvoiceAttachment}
       messageFilters={messageFilters} filterMessages={filterMessages} updateMessageStatus={updateMessageStatus} deleteMessage={deleteMessage}
       toast={toast}
     />

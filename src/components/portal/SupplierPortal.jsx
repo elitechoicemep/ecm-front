@@ -4,10 +4,17 @@ import { Modal } from './Modal';
 import { Toast } from './Toast';
 import { inp, sel, INVOICE_STATUSES } from './utils';
 
+function downloadUrl(attachment) {
+  if (!attachment?.url) return '';
+  return attachment.url.includes('/upload/') ? attachment.url.replace('/upload/', '/upload/fl_attachment/') : attachment.url;
+}
+
 export function SupplierPortal({ user, invoices, invoicePagination, fetchInvoices, projects, invForm, submitInvoice, handleFile, printInvoice, toast }) {
   const [invoiceModalOpen, setInvoiceModalOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState('all');
+  const [docsInvoiceId, setDocsInvoiceId] = useState(null);
 
+  const docsInvoice = invoices.find(inv => (inv.invoiceId || inv._id) === docsInvoiceId) || null;
   const filteredInvoices = invoices.filter(inv => statusFilter === 'all' || inv.status === statusFilter);
   const page = invoicePagination?.page || 1;
   const totalPages = invoicePagination?.totalPages || 1;
@@ -94,12 +101,20 @@ export function SupplierPortal({ user, invoices, invoicePagination, fetchInvoice
                         </div>
                       </div>
 
-                      <button
-                        onClick={() => printInvoice(inv)}
-                        className="w-full sm:w-fit lg:flex-shrink-0 text-[11px] font-bold text-[#C8922A] border border-[#C8922A]/30 px-4 py-2 rounded-lg hover:bg-[#C8922A]/10 transition-all"
-                      >
-                        Download
-                      </button>
+                      <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-fit lg:flex-shrink-0">
+                        <button
+                          onClick={() => setDocsInvoiceId(inv.invoiceId || inv._id)}
+                          className="w-full sm:w-fit text-[11px] font-bold text-white/60 border border-white/10 px-4 py-2 rounded-lg hover:border-[#C8922A] hover:text-[#C8922A] transition-all"
+                        >
+                          View Documents{inv.attachments?.length ? ` (${inv.attachments.length})` : ''}
+                        </button>
+                        <button
+                          onClick={() => printInvoice(inv)}
+                          className="w-full sm:w-fit text-[11px] font-bold text-[#C8922A] border border-[#C8922A]/30 px-4 py-2 rounded-lg hover:bg-[#C8922A]/10 transition-all"
+                        >
+                          Download
+                        </button>
+                      </div>
                     </div>
 
                     <div className="mt-5">
@@ -190,6 +205,50 @@ export function SupplierPortal({ user, invoices, invoicePagination, fetchInvoice
             Submit Invoice
           </button>
         </div>
+      </Modal>
+
+      <Modal open={!!docsInvoice} onClose={() => setDocsInvoiceId(null)} title="Invoice Documents" maxWidth="max-w-[540px]">
+        {docsInvoice && (
+          <div className="space-y-4">
+            <div className="flex flex-col gap-1 text-[13px] text-white/60">
+              <span><strong className="text-white">Invoice:</strong> {docsInvoice.invoiceNo}</span>
+            </div>
+
+            {!docsInvoice.attachments?.length ? (
+              <div className="text-center py-8 text-[13px] text-white/40">No documents uploaded for this invoice.</div>
+            ) : (
+              <div className="flex flex-col gap-2">
+                {docsInvoice.attachments.map((att, i) => (
+                  <div key={att.publicId || i} className="flex items-center justify-between gap-3 px-4 py-3 border border-white/10 rounded-lg">
+                    <div className="min-w-0">
+                      <div className="text-[12px] font-bold text-[#C8922A]">Document {i + 1}</div>
+                      <div className="text-[13px] text-white/70 truncate">{att.fileName || 'Invoice attachment'}</div>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <a
+                        href={att.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="px-3 py-1.5 border border-[#C8922A]/30 rounded-md text-[11px] text-[#C8922A] hover:bg-[#C8922A]/10 transition-all whitespace-nowrap"
+                      >
+                        Open in New Tab
+                      </a>
+                      <a
+                        href={downloadUrl(att)}
+                        download={att.fileName || `${docsInvoice.invoiceNo}-doc-${i + 1}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="px-3 py-1.5 border border-white/10 rounded-md text-[11px] text-white/60 hover:border-[#C8922A] hover:text-[#C8922A] transition-all whitespace-nowrap"
+                      >
+                        Download
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </Modal>
 
       <Toast {...toast} />

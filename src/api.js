@@ -2,6 +2,7 @@ import axios from 'axios';
 
 /* ── Axios instance ─────────────────────────────────────────────── */
 const client = axios.create({
+  // baseURL:     `http://localhost:3000/api`,
   baseURL:     `https://ecm-server-kjtl.onrender.com/api`,
   // baseURL:     `${process.env.REACT_APP_API_URL}/api`,
   withCredentials: true,
@@ -136,5 +137,7 @@ export const api = {
 
   getInvoices:         (page = 1)    => get(`/admin/invoices?page=${page}`),
   updateInvoiceStatus: (id, status)  => patch(`/admin/invoices/${id}/status`, { status }),
+  addInvoiceAttachment: (id, body)   => post(`/admin/invoices/${id}/attachments`, body),
+  deleteInvoiceAttachment: (id, index) => del(`/admin/invoices/${id}/attachments/${index}`),
   deleteInvoice:       id            => del(`/admin/invoices/${id}`),
 };
