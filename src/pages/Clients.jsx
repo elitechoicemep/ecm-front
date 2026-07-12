@@ -52,7 +52,7 @@ export default function Clients() {
       {/* Stats bar */}
       <section className="bg-[#112540] border-b border-[#C8922A]/15">
         <div ref={statsRef} className="rv max-w-[1280px] mx-auto px-6 grid grid-cols-2 md:grid-cols-4 divide-x divide-[#C8922A]/15">
-          <Stat target={2}  suffix="+" label="Active Clients"     />
+          <Stat target={7}  suffix="+" label="Active Clients"     />
           <Stat target={96}  suffix="%" label="Client Retention"   />
           <Stat target={25} suffix="+" label="Projects Delivered" />
           <Stat target={7}   suffix="+" label="Years of Trust"     />
