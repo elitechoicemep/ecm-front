@@ -109,9 +109,7 @@ const clients = [
 
 // ── Licenses from PDF ──
 const licenses = [
-  { num: '01', title: 'Trade License',     authority: 'SEDD — No. 774030',      img: '/assets/images/ECEM_LICENSE_01.png' },
-  { num: '02', title: 'Trading Register',  authority: 'SEDD — Reg. No. 189720', img: '/assets/images/ECEM_LICENSE_02.png' },
-  { num: '03', title: 'Real Beneficiary',  authority: 'SEDD — Nov 2025',         img: '/assets/images/ECEM_LICENSE_03.png' },
+  { num: '01', title: 'Trade License',     authority: 'SEDD — No. 774030',      img: '/assets/images/ECEM_LICENSE_01.webp' },
 ];
 
 function StatCard({ target, suffix, label }) {
