@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 
@@ -59,8 +58,6 @@ const projects = [
   },
 ];
 
-const filters = ['All', 'Full MEP', 'Electrical', 'HVAC', 'Plumbing'];
-
 function ProjectCard({ name, location, tag, desc, img }) {
   return (
     <div className="bg-white border border-[#E2E8F0] overflow-hidden group hover:border-[#C8922A]/40 hover:-translate-y-1 transition-all duration-300">
@@ -107,12 +104,7 @@ function ProjectCard({ name, location, tag, desc, img }) {
 }
 
 export default function Projects() {
-  const [active, setActive] = useState('All');
   const gridRef = useScrollReveal();
-
-  const filtered = active === 'All'
-    ? projects
-    : projects.filter(p => p.tag.includes(active) || p.type === active);
 
   return (
     <>
@@ -151,26 +143,9 @@ export default function Projects() {
       <section className="py-20 bg-[#F5F7FA] text-[#1A2B3C]">
         <div className="max-w-[1280px] mx-auto px-6 md:px-10">
 
-          {/* Filter tabs */}
-          <div className="flex flex-wrap gap-2 mb-12">
-            {filters.map(f => (
-              <button
-                key={f}
-                onClick={() => setActive(f)}
-                className={`text-[12px] font-bold tracking-[0.5px] uppercase px-5 py-2 border transition-all duration-200 ${
-                  active === f
-                    ? 'bg-[#0B1D33] text-white border-[#0B1D33]'
-                    : 'bg-white text-[#64748B] border-[#E2E8F0] hover:border-[#C8922A] hover:text-[#C8922A]'
-                }`}
-              >
-                {f}
-              </button>
-            ))}
-          </div>
-
           {/* Grid */}
           <div ref={gridRef} className="rv grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filtered.map(p => (
+            {projects.map(p => (
               <ProjectCard key={p.id} {...p} />
             ))}
           </div>

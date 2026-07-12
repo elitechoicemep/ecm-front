@@ -132,6 +132,7 @@ export default function Home() {
   const clientsRef  = useScrollReveal();
   const careerRef   = useScrollReveal();
   const ctaRef      = useScrollReveal();
+  const experience = new Date().getFullYear() - 2019;
 
   return (
     <>
@@ -166,8 +167,8 @@ export default function Home() {
       <section className="bg-[#112540] border-y border-[#C8922A]/15 py-10">
         <div className="max-w-[1280px] mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8">
           <StatCard target={25} suffix="+" label="Projects Completed" />
-          <StatCard target={2}  suffix="+" label="Active Clients"     />
-          <StatCard target={7}   suffix="+" label="Years of Experience" />
+          <StatCard target={7}  suffix="+" label="Active Clients"     />
+          <StatCard target={experience} suffix="+" label="Years of Experience" />
           <StatCard target={96}  suffix="%" label="Client Retention"   />
         </div>
       </section>
@@ -189,7 +190,7 @@ export default function Home() {
               With an experienced engineering and technician team, we deliver reliable execution, on-time completion, and strict quality control on every project, from small fit-outs to large-scale developments.
             </p>
             <div className="grid grid-cols-3 gap-4 mb-8">
-              {[['6+', 'Years Active'], ['UAE', 'Nationwide'], ['2019', 'Founded']].map(([v, l]) => (
+              {[[`${experience}+`, 'Years Active'], ['UAE', 'Nationwide'], ['2019', 'Founded']].map(([v, l]) => (
                 <div key={l} className="border border-[#E2E8F0] p-4 text-center">
                   <div className="font-condensed text-[24px] font-extrabold text-[#0B1D33]">{v}</div>
                   <div className="text-[10px] font-bold tracking-[1px] uppercase text-[#C8922A] mt-1">{l}</div>
