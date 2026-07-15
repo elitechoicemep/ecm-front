@@ -18,8 +18,8 @@ export const sel = inp + ' bg-[#112540]';
 
 export function buildSlipHTML(slip, emp) {
   const f = n => 'AED ' + Number(n).toLocaleString('en-AE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  const gross = slip.basic + slip.hra + slip.ta + slip.med + slip.other;
-  const ded   = slip.pf   + slip.tax  + slip.pt  + slip.esi + slip.loan;
+  const gross = slip.basic + slip.hra + slip.ta + (slip.ot || 0) + slip.other;
+  const ded   = (slip.advance || 0) + (slip.absent || 0);
   const net   = gross - ded;
   const row = (l, v, red) =>
     `<tr><td style="padding:8px 0;color:#64748b;font-size:13px;border-bottom:1px solid #f1f5f9">${l}</td>` +
@@ -53,13 +53,10 @@ export function buildSlipHTML(slip, emp) {
     `<div class="mi"><div class="ml">Designation</div><div class="mv">${emp?.desig || ''}</div></div></div>`,
     `<div class="grid"><div><div class="st">Earnings</div><table>`,
     row('Basic Salary', f(slip.basic)), row('Housing Allowance', f(slip.hra)),
-    row('Transport Allowance', f(slip.ta)), row('Medical Allowance', f(slip.med)), row('Other Allowance', f(slip.other)),
+    row('Transport Allowance', f(slip.ta)), row('Overtime', f(slip.ot)), row('Other Allowance', f(slip.other)),
     `</table></div><div><div class="st">Deductions</div><table>`,
-    row('Provident Fund',   slip.pf   ? f(slip.pf)   : '—', !!slip.pf),
-    row('Income Tax',       slip.tax  ? f(slip.tax)  : '—', !!slip.tax),
-    row('Professional Tax', slip.pt   ? f(slip.pt)   : '—', !!slip.pt),
-    row('Insurance (ESI)',  slip.esi  ? f(slip.esi)  : '—', !!slip.esi),
-    row('Loan Recovery',    slip.loan ? f(slip.loan) : '—', !!slip.loan),
+    row('Advance Paid',             slip.advance ? f(slip.advance) : '—', !!slip.advance),
+    row('Leave Deduction (Absent)', slip.absent  ? f(slip.absent)  : '—', !!slip.absent),
     `</table></div></div>`,
     `<div class="total"><div><div class="tl">Net Take-Home Pay</div><div class="tn">Gross: ${f(gross)} &nbsp;|&nbsp; Deductions: ${f(ded)}</div></div><div class="ta">${f(net)}</div></div>`,
     `<div class="foot"><span>Elite Choice Electromechanical Contracting LLC</span><span>Generated: ${new Date().toLocaleDateString('en-AE')}</span></div>`,

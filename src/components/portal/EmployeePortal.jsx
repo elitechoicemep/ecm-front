@@ -3,8 +3,8 @@ import { Toast } from './Toast';
 import { fmt, sel, MONTHS } from './utils';
 
 export function EmployeePortal({ slip, selMonth, setSelMonth, selYear, setSelYear, fetchSlip, printSlip, printOnly, toast }) {
-  const gross = slip ? slip.basic + slip.hra + slip.ta + slip.med + slip.other : 0;
-  const ded   = slip ? slip.pf   + slip.tax  + slip.pt + slip.esi + slip.loan  : 0;
+  const gross = slip ? slip.basic + slip.hra + slip.ta + (slip.ot || 0) + slip.other : 0;
+  const ded   = slip ? (slip.advance || 0) + (slip.absent || 0) : 0;
   const net   = gross - ded;
 
   return (
@@ -76,7 +76,7 @@ export function EmployeePortal({ slip, selMonth, setSelMonth, selYear, setSelYea
                   ['Basic Salary',       slip.basic],
                   ['Housing Allowance',  slip.hra],
                   ['Transport Allowance',slip.ta],
-                  ['Medical Allowance',  slip.med],
+                  ['Overtime',           slip.ot],
                   ['Other Allowance',    slip.other],
                 ].map(([l, v]) => (
                   <div key={l} className="flex justify-between py-2.5 border-b border-white/[0.08] last:border-b-0">
@@ -88,11 +88,8 @@ export function EmployeePortal({ slip, selMonth, setSelMonth, selYear, setSelYea
               <div>
                 <div className="text-[10px] font-bold tracking-[1.2px] uppercase text-[#C8922A] mb-3">Deductions</div>
                 {[
-                  ['Provident Fund',   slip.pf],
-                  ['Income Tax',       slip.tax],
-                  ['Professional Tax', slip.pt],
-                  ['Insurance (ESI)',  slip.esi],
-                  ['Loan Recovery',    slip.loan],
+                  ['Advance Paid',             slip.advance],
+                  ['Leave Deduction (Absent)', slip.absent],
                 ].map(([l, v]) => (
                   <div key={l} className="flex justify-between py-2.5 border-b border-white/[0.08] last:border-b-0">
                     <span className="text-[13px] text-white/50">{l}</span>

@@ -56,10 +56,10 @@ export default function Portal() {
   const [messageFilters, setMessageFilters] = useState({ status: '', service: '', from: '', to: '', page: 1, limit: 10 });
 
   /* ── Forms ── */
-  const empForm     = useForm({ id: '', name: '', dept: 'MEP', desig: '', username: '', password: '', email: '' });
+  const empForm     = useForm({ name: '', dept: 'MEP', desig: '', username: '', password: '', email: '' });
   const editEmpForm = useForm({ name: '', dept: 'MEP', desig: '' });
-  const salForm     = useForm({ empId: '', month: new Date().getMonth() + 1, year: new Date().getFullYear(), basic: '', hra: '', ta: '', med: '', other: '', pf: '', tax: '', pt: '', esi: '', loan: '', status: 'paid' });
-  const credForm    = useForm({ username: '', password: '', role: 'employee', empId: '', email: '' });
+  const salForm     = useForm({ empId: '', month: new Date().getMonth() + 1, year: new Date().getFullYear(), basic: '', hra: '', ta: '', ot: '', other: '', advance: '', absent: '', status: 'paid' });
+  const credForm    = useForm({ username: '', password: '', role: 'supplier', email: '' });
   const supForm     = useForm({ username: '', password: '', company: '', contact: '', email: '' });
   const prjForm     = useForm({ id: '', name: '' });
   const invForm     = useForm({ projectId: '', invoiceNo: '', amount: '', fileDataUrl: null, _fileName: '' });
@@ -385,13 +385,12 @@ export default function Portal() {
   /* ── Employees ── */
 
   const saveEmployee = async () => {
-    const { id, name, dept, desig, username, password, email } = empForm.values;
-    if (!id || !name || !desig || !username || !password || !email) {
+    const { name, dept, desig, username, password, email } = empForm.values;
+    if (!name || !desig || !username || !password || !email) {
       showToast('All fields are required', 'error'); return;
     }
     try {
-      await api.addEmployee({ id, name, dept, desig });
-      await api.addCredential({ username, password, role: 'employee', empId: id, email });
+      await api.addEmployee({ name, dept, desig, username, password, email });
       const [emps, creds] = await Promise.all([api.getEmployees(), api.getCredentials()]);
       setEmployees(emps); setCredentials(creds);
       setModal(null); empForm.reset();
@@ -431,8 +430,8 @@ export default function Portal() {
     try {
       await api.addSalary({
         empId: v.empId, month: +v.month, year: +v.year,
-        basic: +v.basic||0, hra: +v.hra||0, ta: +v.ta||0, med: +v.med||0, other: +v.other||0,
-        pf: +v.pf||0, tax: +v.tax||0, pt: +v.pt||0, esi: +v.esi||0, loan: +v.loan||0,
+        basic: +v.basic||0, hra: +v.hra||0, ta: +v.ta||0, ot: +v.ot||0, other: +v.other||0,
+        advance: +v.advance||0, absent: +v.absent||0,
         status: v.status,
       });
       const sals = await api.getSalaries();
@@ -460,7 +459,7 @@ export default function Portal() {
 
   /* ── Credentials ── */
   const saveCred = async () => {
-    const { username, password, role, empId, email } = credForm.values;
+    const { username, password, role, email } = credForm.values;
     if (!username || !password) { showToast('Fill all fields', 'error'); return; }
     if (role === 'admin' && !window.confirm(`Grant full admin access to "${username}"? Admins can manage all users, salaries, and cannot be suspended or deleted by other admins.`)) {
       return;
@@ -468,7 +467,6 @@ export default function Portal() {
     try {
       await api.addCredential({
         username, password, role,
-        ...(empId ? { empId } : {}),
         ...(email ? { email } : {}),
       });
       const creds = await api.getCredentials();

@@ -31,7 +31,7 @@ export function AdminPanel({
 }) {
   /* Conditionally label email field based on selected role */
   const credRole      = credForm.values.role;
-  const emailRequired = credRole === 'employee' || credRole === 'supplier';
+  const emailRequired = credRole === 'supplier';
 
   return (
     <div className="min-h-screen pt-[68px] bg-[#0B1D33]">
@@ -129,11 +129,8 @@ export function AdminPanel({
       {/* ── Add Employee Modal ── */}
       <Modal open={modal === 'addEmp'} onClose={() => setModal(null)} title="Add Employee">
         <div className="grid sm:grid-cols-2 gap-4">
-          <Field label="Full Name">
+          <Field label="Full Name" span2>
             <input value={empForm.values.name} onChange={empForm.set('name')} placeholder="John Smith" className={inp} />
-          </Field>
-          <Field label="Employee ID">
-            <input value={empForm.values.id} onChange={empForm.set('id')} placeholder="EMP-004" className={inp} />
           </Field>
           <Field label="Department">
             <select value={empForm.values.dept} onChange={empForm.set('dept')} className={sel}>
@@ -210,8 +207,8 @@ export function AdminPanel({
           </div>
           <div className="grid sm:grid-cols-2 gap-3">
             {[
-              ['Basic','basic'],['Housing','hra'],['Transport','ta'],['Medical','med'],['Other','other'],
-              ['Provident Fund','pf'],['Income Tax','tax'],['Prof. Tax','pt'],['Insurance','esi'],['Loan','loan'],
+              ['Basic','basic'],['Housing','hra'],['Transport','ta'],['Overtime','ot'],['Other','other'],
+              ['Advance Paid','advance'],['Leave Deduction','absent'],
             ].map(([l, k]) => (
               <Field key={k} label={`${l} (AED)`}>
                 <input type="number" value={salForm.values[k]} onChange={salForm.set(k)} placeholder="0" className={inp} />
@@ -242,15 +239,8 @@ export function AdminPanel({
           </Field>
           <Field label="Role">
             <select value={credForm.values.role} onChange={credForm.set('role')} className={sel}>
-              <option value="employee">Employee</option>
-              <option value="admin">Admin</option>
               <option value="supplier">Supplier</option>
-            </select>
-          </Field>
-          <Field label="Linked Employee">
-            <select value={credForm.values.empId} onChange={credForm.set('empId')} className={sel}>
-              <option value="">— None —</option>
-              {employees.map(e => <option key={e.empId} value={e.empId}>{e.name} ({e.empId})</option>)}
+              <option value="admin">Admin</option>
             </select>
           </Field>
           <Field label={`Email ${emailRequired ? '*' : '(optional)'}`} span2>
